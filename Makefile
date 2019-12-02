@@ -1,0 +1,42 @@
+FLAGS = -fPIC -O2
+CFLAGS = $(FLAGS)
+HFLAGS = $(FLAGS) -threaded -rtsopts -v0
+DONEHS = $(wildcard [0-9]*.hs)
+DONEC = $(wildcard [0-9]*.c)
+
+all: $(sort $(DONEHS:%.hs=%h.output) $(DONEC:%.c=%c.output))
+	@for output in $^; do /bin/echo -n "$$output: "; cat "$$output"; done
+
+clean:
+	@rm -f -- [0-9][0-9][ab][hc] [0-9][ab][hc] *.o *.hi *.so *.a
+
+distclean: clean
+	@rm -f -- *.output
+
+%ah.output: %ah %.input
+	@./$< < $*.input > $@
+
+%bh.output: %bh %.input
+	@./$< < $*.input > $@
+
+%ac.output: %ac %.input
+	@./$< < $*.input > $@
+
+%bc.output: %bc %.input
+	@./$< < $*.input > $@
+
+%h:: %.hs
+	ghc $(HFLAGS) -o $@ $^
+	@rm -f -- $*.hi $*.o
+
+%c:: %.c
+	gcc $(CFLAGS) -o $@ $^
+
+intcode.o: intcode.c
+	gcc $(CFLAGS) -c -o $@ $<
+
+2ah 2bh 2ac 2bc: intcode.o
+
+.PRECIOUS: %h %c
+
+.PHONY: all clean distclean
