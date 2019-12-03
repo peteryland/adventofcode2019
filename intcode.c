@@ -41,7 +41,7 @@ int readprog(FILE *in, word *a) {
   size_t len = 0;
   word *p = a;
 
-  char line[10485760], *linep;
+  char line[1048576], *linep;
   char *token;
 
   while (fgets(line, sizeof line, in) != 0) {

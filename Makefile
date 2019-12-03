@@ -1,4 +1,4 @@
-FLAGS = -fPIC -O2
+FLAGS = -fPIC -O2 -g
 CFLAGS = $(FLAGS)
 HFLAGS = $(FLAGS) -threaded -rtsopts -v0
 DONEHS = $(wildcard [0-9]*.hs)
@@ -14,10 +14,10 @@ distclean: clean
 	@rm -f -- *.output
 
 %ah.output: %ah %.input
-	@./$< < $*.input > $@
+	@./$< +RTS -N8 < $*.input > $@
 
 %bh.output: %bh %.input
-	@./$< < $*.input > $@
+	@./$< +RTS -N8 < $*.input > $@
 
 %ac.output: %ac %.input
 	@./$< < $*.input > $@
