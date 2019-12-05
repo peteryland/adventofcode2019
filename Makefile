@@ -36,6 +36,7 @@ intcode.o: intcode.c
 	gcc $(CFLAGS) -c -o $@ $<
 
 2ah 2bh 2ac 2bc: intcode.o
+5ah 5bh 5ac 5bc: intcode.o
 
 .PRECIOUS: %h %c
 

@@ -5,7 +5,8 @@
 
 typedef int word;
 
-int runcode(word *input, size_t len, word noun, word verb);
+int runcode(word *a, size_t len, word noun, word verb);
+int runcode5(word *a, size_t len, word *input);
 int readprog(FILE *in, word *a);
 int readprogs(word **a);
 
