@@ -31,6 +31,7 @@ distclean: clean
 
 %c:: %.c
 	gcc $(CFLAGS) -o $@ $^
+	@rm -rf -- $@.dSYM
 
 intcode.o: intcode.c
 	gcc $(CFLAGS) -c -o $@ $<
