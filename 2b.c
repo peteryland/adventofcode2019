@@ -10,8 +10,8 @@ int main() {
 
   for (i = 0; i <= 100; i++) {
     for (j = 0; j <= 100; j++) {
-      int result = runcode(a, len, i, j);
-      if (runcode(a, len, i, j) == 19690720)
+      int result = runcode_basic(a, len, i, j);
+      if (runcode_basic(a, len, i, j) == 19690720)
         goto here;
     }
   }

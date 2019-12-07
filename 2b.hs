@@ -1,7 +1,7 @@
 import IntCodeHS
 
 runCode' p i j = do
-  r <- runCode p i j
+  r <- runCodeBasic p i j
   return (r, i, j)
 
 main = do

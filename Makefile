@@ -9,6 +9,7 @@ all: $(sort $(DONEHS:%.hs=%h.output) $(DONEC:%.c=%c.output))
 
 clean:
 	@rm -f -- [0-9][0-9][ab][hc] [0-9][ab][hc] *.o *.hi *.so *.a
+	@rm -rf -- *.dSYM
 
 distclean: clean
 	@rm -f -- *.output
@@ -36,8 +37,7 @@ distclean: clean
 intcode.o: intcode.c
 	gcc $(CFLAGS) -c -o $@ $<
 
-2ah 2bh 2ac 2bc: intcode.o
-5ah 5bh 5ac 5bc: intcode.o
+2ah 2bh 2ac 2bc 5ac 5bc 7ac 7bc: intcode.o
 
 .PRECIOUS: %h %c
 

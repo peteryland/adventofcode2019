@@ -6,6 +6,6 @@
 int main() {
   word *a;
   size_t len = readprogs(&a);
-  int result = runcode(a, len, 12, 2);
+  int result = runcode_basic(a, len, 12, 2);
   printf("%d\n", result);
 }
