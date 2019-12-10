@@ -1,10 +1,12 @@
 FLAGS = -fPIC -O2 -g
 CFLAGS = $(FLAGS)
 HFLAGS = $(FLAGS) -threaded -rtsopts -v0
-DONEHS = $(wildcard [0-9]*.hs)
-DONEC = $(wildcard [0-9]*.c)
+DONEHS1 = $(wildcard [0-9][a-z].hs)
+DONEHS2 = $(wildcard [0-9][0-9][a-z].hs)
+DONEC1 = $(wildcard [0-9][a-z].c)
+DONEC2 = $(wildcard [0-9][0-9][a-z].c)
 
-all: $(sort $(DONEHS:%.hs=%h.output) $(DONEC:%.c=%c.output))
+all: $(sort $(DONEHS1:%.hs=%h.output) $(DONEC1:%.c=%c.output)) $(sort $(DONEHS2:%.hs=%h.output) $(DONEC2:%.c=%c.output))
 	@for output in $^; do /bin/echo -n "$$output: "; cat "$$output"; done
 
 clean:
@@ -13,6 +15,14 @@ clean:
 
 distclean: clean
 	@rm -f -- *.output
+
+test:
+	@make > .output
+	@diff -u .expected_output .output
+
+updatetest:
+	@make > /dev/null
+	@make > .expected_output
 
 %ah.output: %ah %.input
 	@./$< +RTS -N8 < $*.input > $@
@@ -38,7 +48,8 @@ intcode.o: intcode.c
 	gcc $(CFLAGS) -c -o $@ $<
 
 2ah 2bh 2ac 2bc 5ac 5bc 7ac 7bc 9ac 9bc: intcode.o
+2ah 2bh: IntCodeHS.hs
 
 .PRECIOUS: %h %c
 
-.PHONY: all clean distclean
+.PHONY: all clean distclean test updatetest

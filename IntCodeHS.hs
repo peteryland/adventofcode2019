@@ -3,7 +3,6 @@
 module IntCodeHS where
 
 import Foreign
--- import Foreign.C.Types
 
 splitBy :: Char -> String -> [Int64]
 splitBy c s = case break (== c) s of

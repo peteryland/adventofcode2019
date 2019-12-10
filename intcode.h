@@ -10,7 +10,6 @@ typedef struct {
 } state;
 
 word runcode_basic(word *a, size_t len, word noun, word verb);
-word runcode_normal(word *a, size_t len, word *input);
 word runcode(word *a, size_t len, word *input);
 state *runcode_new(word *a, size_t len, word *input);
 state *resume(state *s, word *input);

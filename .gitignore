@@ -1,3 +1,4 @@
+.expected_output
 *.hi
 *.o
 *.output

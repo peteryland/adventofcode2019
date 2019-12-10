@@ -27,7 +27,7 @@ dist (x1, y1) = abs x1 + abs y1
 
 main = do
   is <- lines <$> getContents
-  let cs = map (getCoords . splitBy ',') is
-  let cs' = intersect' (cs !! 0) (cs !! 1)
+  let [cs0,cs1] = map (getCoords . splitBy ',') is
+  let cs' = intersect' cs0 cs1
   let closest = minimumBy (comparing dist) cs'
   print $ dist closest
