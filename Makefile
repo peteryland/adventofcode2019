@@ -47,7 +47,7 @@ updatetest:
 intcode.o: intcode.c
 	gcc $(CFLAGS) -c -o $@ $<
 
-2ah 2bh 2ac 2bc 5ac 5bc 7ac 7bc 9ac 9bc: intcode.o
+2ah 2bh 2ac 2bc 5ac 5bc 7ac 7bc 9ac 9bc 11ac 11bc: intcode.o
 2ah 2bh: IntCodeHS.hs
 
 .PRECIOUS: %h %c
