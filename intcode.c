@@ -87,7 +87,7 @@ size_t readprog(FILE *in, word *a) {
 
 size_t readprogs(word **prog) {
   if (prog == 0) return -1;
-  word a[1048576];
+  word a[10240];
   size_t len = readprog(stdin, a);
 
   *prog = calloc(sizeof(word), 4 * len);
