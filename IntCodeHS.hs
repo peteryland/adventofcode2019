@@ -2,16 +2,11 @@
 
 module IntCodeHS where
 
+import PP
 import Foreign
 
-splitBy :: Char -> String -> [Int64]
-splitBy c s = case break (== c) s of
-                (t, s') -> (read t):(case s' of
-                                       []    -> []
-                                       _:s'' -> splitBy c s'')
-
 readProg :: IO [Int64]
-readProg = splitBy ',' <$> getLine
+readProg = findAll <$> getLine
 
 foreign import ccall "intcode.h runcode_basic"
   c_runcode_basic :: Ptr Int64 -> Int64 -> Int64 -> Int64 -> IO Int64

@@ -1,12 +1,5 @@
 {-# LANGUAGE BangPatterns #-}
-
-import Data.List
-import Data.Ord
-
-splitBy c s = case break (== c) s of
-                (t, s') -> t:(case s' of
-                                []    -> []
-                                _:s'' -> splitBy c s'')
+import PP
 
 getCoords :: [String] -> [(Int, Int)]
 getCoords !xs = getCoords' (0,0) xs
@@ -22,12 +15,9 @@ getCoords !xs = getCoords' (0,0) xs
 
 intersect' !xs !ys = [x | x <- xs, y <- take 1 $ filter (==x) ys]
 
-dist :: (Int, Int) -> Int
-dist (x1, y1) = abs x1 + abs y1
-
 main = do
   is <- lines <$> getContents
   let [cs0,cs1] = map (getCoords . splitBy ',') is
   let cs' = intersect' cs0 cs1
-  let closest = minimumBy (comparing dist) cs'
-  print $ dist closest
+  let closest = minimumBy (comparing $ manDist (0, 0)) cs'
+  print $ manDist closest (0, 0)

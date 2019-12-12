@@ -1,12 +1,6 @@
-import Data.List
-import Data.Ord
+import PP
 
-splitBy c s = case break (== c) s of
-                (t, s') -> t:(case s' of
-                                []    -> []
-                                _:s'' -> splitBy c s'')
-
-getCoords :: [String] -> [(Int, Int, Int)]
+getCoords :: [String] -> [V3i]
 getCoords xs = getCoords' (0,0,0) xs
   where
     getCoords' _ [] = []

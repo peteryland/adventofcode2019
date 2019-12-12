@@ -1,7 +1,6 @@
-import Data.List.Split
-import Data.Char
+import PP
 
-main = interact $ (++ "\n") . show . doCalc . findMin0s . chunksOf lsize . filter isDigit
+main = interact1 $ doCalc . findMin0s . chunksOf lsize
   where
     lsize = 25*6
     lf c = length . filter (==c)

@@ -1,12 +1,9 @@
-import Data.List(group)
+import PP
 
-input = (165432, 707912)
+main = interactBy (=='-') $ length . filter id . map (ok . show) . (\[x, y] -> [x..y] :: [Int]) . map read
 
 ok x = a && b && c
   where
-    x' = show x
-    a = length x' == 6
-    b = or $ map ((>1) . length) $ group x'
-    c = and $ map (uncurry (>=)) $ zip (tail x') x'
-
-main = print $ length $ filter id $ map ok [fst input..snd input]
+    a = length x == 6
+    b = or $ map ((>1) . length) $ group x
+    c = and $ map (uncurry (>=)) $ zip (tail x) x
