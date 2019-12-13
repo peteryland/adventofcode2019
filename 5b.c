@@ -1,7 +1,9 @@
 #include "intcode.h"
 
 int main() {
-  word *a, input = 5;
-  size_t len = readprogs(&a);
-  runcode(a, len, &input);
+  state *s = readprog();
+  s->input = 5;
+  s->onoutput = printcb;
+  runcode(s);
+  printf("\n");
 }

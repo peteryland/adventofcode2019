@@ -4,43 +4,61 @@
 
 #define MAXOPERANDS 3
 
-word runcode_basic(word *a, size_t len, word noun, word verb) {
+state *copystate(state *s0) {
   state *s = calloc(1, sizeof(state));
-  s->ip = 0;
-  s->prog = calloc(len, sizeof(word));
-  memcpy(s->prog, a, len * sizeof(word));
-  s->relbase = 0;
-  s->prog[1] = noun;
-  s->prog[2] = verb;
-
-  for (state *p = s; p; p = resume(s, 0));
-  return s->prog[0];
-}
-
-word runcode(word *a, size_t len, word *input) {
-  int isfirst = 1;
-  state *s = runcode_new(a, len, input);
-
-  for (state *p = s; p; p = resume(s, input)) {
-    printf("%s%lld", isfirst?"":",", s->output);
-    isfirst = 0;
+  s->mode = s0->mode;
+  s->state = s0->state;
+  s->output = s0->output;
+  s->prog = calloc(s0->len, sizeof(word));
+  memcpy(s->prog, s0->prog, s0->len * sizeof(word));
+  s->len = s0->len;
+  s->ip = s0->ip;
+  s->relbase = s0->relbase;
+  s->input = s0->input;
+  s->useroutputstate = s0->useroutputstate;
+  s->userstateword = s0->userstateword;
+  if (s0->userlen) {
+    s->userstate = calloc(1, s0->userlen);
+    memcpy(s->userstate, s0->userstate, s0->userlen);
+  } else {
+    s->userstate = s0->userstate;
   }
-  printf("\n");
-  return s->output;
+  s->userlen = s0->userlen;
+  return s;
 }
 
-state *runcode_new(word *a, size_t len, word *input) {
-  state *s = calloc(1, sizeof(state));
-  s->ip = 0;
-  s->prog = calloc(len, sizeof(word));
-  memcpy(s->prog, a, len * sizeof(word));
-  s->relbase = 0;
-
-  return resume(s, input);
+void printstate(state *s) {
+  printf("%d %lld %lld %lld %lld\n", s->state, s->ip, s->input, s->output, s->prog[s->ip]);
 }
 
-state *resume(state *s, word *input) {
+// Doesn't free user state
+void freestate(state *s) {
+  if (s) {
+    if (s->prog)
+      free(s->prog);
+    free(s);
+  }
+}
+
+void printcb(state *s) {
+  printf("%s%lld", s->useroutputstate?",":"", s->output);
+  s->useroutputstate = 1;
+  s->state = NORMAL;
+}
+
+//word getoutput(state *s) {
+  //return s->output;
+//}
+
+void runinput(state *s, word input) {
+  s->input = input;
+  s->state = INPUTGIVEN;
+  runcode(s);
+}
+
+void runcode(state *s) {
   for (word *a = s->prog; a[s->ip] != 99; ) {
+    //printstate(s);
     word opcode = a[s->ip] % 100;
     word *ops[MAXOPERANDS];
 
@@ -55,19 +73,50 @@ state *resume(state *s, word *input) {
     switch(opcode) {
       case 1: *ops[2] = *ops[0] + *ops[1]; s->ip += 4; break; // add
       case 2: *ops[2] = *ops[0] * *ops[1]; s->ip += 4; break; // mul
-      case 3: *ops[0] = *input++; s->ip += 2; break; // in
-      case 4: s->output = *ops[0]; s->ip += 2; return s; break; // out
+      case 3: // in
+        if (s->mode == SYNC) {
+          if (s->state != INPUTGIVEN) {
+            s->state = NEEDINPUT;
+            return;
+          }
+          s->state = NORMAL;
+        } else {
+          if (s->oninput) {
+            s->oninput(s);
+          }
+        }
+        *ops[0] = s->input;
+        s->ip += 2;
+        break;
+      case 4: // out
+        s->output = *ops[0];
+        s->ip += 2;
+        if (s->mode == SYNC) {
+          s->state = HAVEOUTPUT;
+          return;
+        }
+        if (s->onoutput) {
+          s->onoutput(s);
+        }
+        break;
       case 5: s->ip = *ops[0]? *ops[1] : s->ip + 3; break; // ifn
       case 6: s->ip = *ops[0]? s->ip + 3 : *ops[1]; break; // ifz
       case 7: *ops[2] = *ops[0] < *ops[1]; s->ip += 4; break; // lt
       case 8: *ops[2] = *ops[0] == *ops[1]; s->ip += 4; break; // eq
       case 9: s->relbase += *ops[0]; s->ip += 2; break; // arb
+      default: s->state = ERROR; return;
     }
   }
-  return 0;
+  s->state = NORMAL;
 }
 
-size_t readprog(FILE *in, word *a) {
+state *readprog() {
+  return readprogf(stdin);
+}
+
+state *readprogf(FILE *in) {
+  state *s = calloc(1, sizeof(state));
+  word a[10240];
   size_t len = 0;
   word *p = a;
 
@@ -82,16 +131,21 @@ size_t readprog(FILE *in, word *a) {
       }
     }
   }
-  return len;
-}
 
-size_t readprogs(word **prog) {
-  if (prog == 0) return -1;
-  word a[10240];
-  size_t len = readprog(stdin, a);
-
-  *prog = calloc(sizeof(word), 4 * len);
-  if (*prog == 0) return -2;
-  memcpy(*prog, a, sizeof(word) * len);
-  return 4 * len;
+  s->mode = ASYNC;
+  s->state = NORMAL;
+  s->output = 0;
+  s->prog = calloc(sizeof(word), 4 * len);
+  memcpy(s->prog, a, sizeof(word) * len);
+  s->len = len;
+  s->ip = 0;
+  s->relbase = 0;
+  s->input = 0;
+  s->useroutputstate = 0;
+  s->userstateword = 0;
+  s->userstate = 0;
+  s->userlen = 0;
+  s->oninput = 0;
+  s->onoutput = 0;
+  return s;
 }

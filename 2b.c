@@ -4,18 +4,20 @@
 #include "intcode.h"
 
 int main() {
-  word *a;
-  size_t len = readprogs(&a);
-  int i, j;
+  state *s0 = readprog();
 
-  for (i = 0; i <= 100; i++) {
-    for (j = 0; j <= 100; j++) {
-      int result = runcode_basic(a, len, i, j);
-      if (runcode_basic(a, len, i, j) == 19690720)
-        goto here;
+  for (word i = 0; i <= 100; i++) {
+    for (word j = 0; j <= 100; j++) {
+      state *s = copystate(s0);
+      s->prog[1] = i;
+      s->prog[2] = j;
+      runcode(s);
+      if (s->prog[0] == 19690720) {
+        printf("%lld%lld\n", i, j);
+        return 0;
+      }
+      freestate(s);
     }
   }
-here:
-  printf("%d%d\n", i, j);
 }
 

@@ -1,21 +1,18 @@
 #include "intcode.h"
 
 int main() {
-  int panelpainted[200][200] = {0};
   word panel[200][200] = {0};
   int x = 100, y = 100;
-  word *a, *input;
-  size_t len = readprogs(&a);
+  state *s = readprog();
+  s->mode = SYNC;
   int direction = 0;
 
-  input = &(panel[x][y]);
-  *input = 1;
-  state *s = runcode_new(a, len, input);
+  panel[x][y] = 1;
+  runinput(s, panel[x][y]);
   do {
-    panelpainted[x][y] = 1;
     panel[x][y] = s->output;
-    s = resume(s, input);
-    if (s == 0)
+    runcode(s);
+    if (s->state == NORMAL)
       break;
     if (s->output)
       direction++;
@@ -28,11 +25,9 @@ int main() {
       case 1: x++; break;
       case 2: y++; break;
       case 3: x--; break;
-      default: printf("weird\n");
     }
 
-    input = &(panel[x][y]);
-    s = resume(s, input);
+    runinput(s, panel[x][y]);
   } while (s);
 
   printf("\n");

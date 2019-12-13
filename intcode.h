@@ -5,15 +5,28 @@
 
 typedef long long word;
 
-typedef struct {
-  word output, *prog, ip, relbase;
+typedef struct state_t {
+  enum { ASYNC, SYNC } mode;
+  enum { NORMAL, ERROR, HAVEOUTPUT, NEEDINPUT, INPUTGIVEN } state;
+  word output, *prog;
+  size_t len;
+  word ip, relbase, input;
+  word useroutputstate;
+  word userstateword;
+  void *userstate;
+  size_t userlen;
+  void (*oninput)(struct state_t *s);
+  void (*onoutput)(struct state_t *s);
 } state;
 
-word runcode_basic(word *a, size_t len, word noun, word verb);
-word runcode(word *a, size_t len, word *input);
-state *runcode_new(word *a, size_t len, word *input);
-state *resume(state *s, word *input);
-size_t readprog(FILE *in, word *a);
-size_t readprogs(word **a);
+typedef void (*rccb)(state *s);
+
+state *readprogf(FILE *in);
+state *readprog();
+state *copystate(state *s);
+void runcode(state *s);
+void runinput(state *s, word input);
+void printcb(state *s);
+void freestate(state *s);
 
 #endif

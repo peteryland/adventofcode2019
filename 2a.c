@@ -4,8 +4,9 @@
 #include "intcode.h"
 
 int main() {
-  word *a;
-  size_t len = readprogs(&a);
-  int result = runcode_basic(a, len, 12, 2);
-  printf("%d\n", result);
+  state *s = readprog();
+  s->prog[1] = 12;
+  s->prog[2] = 2;
+  runcode(s);
+  printf("%lld\n", s->prog[0]);
 }

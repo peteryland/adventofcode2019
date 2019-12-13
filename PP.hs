@@ -1,6 +1,7 @@
 {-#LANGUAGE TypeSynonymInstances, TypeFamilies, FlexibleInstances, TupleSections, FlexibleContexts, AllowAmbiguousTypes #-}
-module PP( module PP, module Data.Ord, module Data.Char, module Data.Maybe, module Data.List, module Data.List.Split, module Control.Arrow) where
+module PP( module PP, module Data.Int, module Data.Ord, module Data.Char, module Data.Maybe, module Data.List, module Data.List.Split, module Control.Arrow) where
 
+import Data.Int
 import Data.Ord
 import Data.Char
 import Data.Maybe
