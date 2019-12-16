@@ -6,7 +6,7 @@
 typedef long long word;
 
 typedef struct state_t {
-  enum { ASYNC, SYNC } mode;
+  enum { SYNC, ASYNC } mode;
   enum { NORMAL, ERROR, HAVEOUTPUT, NEEDINPUT, INPUTGIVEN } state;
   word output, *prog;
   size_t len;

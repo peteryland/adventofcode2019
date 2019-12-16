@@ -44,7 +44,6 @@ int main() {
 #else
   state *s = readprog();
 #endif
-  s->mode = SYNC;
   s->prog[0] = 2;
 #ifdef _interactive
   printf("[2J");

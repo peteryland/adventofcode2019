@@ -5,7 +5,6 @@ int grid[1000][1000] = {0};
 int main() {
   int blocks = 0;
   state *s = readprog();
-  s->mode = SYNC;
   do {
     runcode(s);
     word x = s->output;

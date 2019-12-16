@@ -36,7 +36,6 @@ int main() {
   int bearinglist[SIZE*SIZE];
   int x = SIZE/2, y = SIZE/2;
   state *s = readprog();
-  s->mode = SYNC;
   int *bearing = bearinglist;
   grid[x][y] = VISITED;
   do {

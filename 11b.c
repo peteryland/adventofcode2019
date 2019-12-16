@@ -4,7 +4,6 @@ int main() {
   word panel[200][200] = {0};
   int x = 100, y = 100;
   state *s = readprog();
-  s->mode = SYNC;
   int direction = 0;
 
   panel[x][y] = 1;

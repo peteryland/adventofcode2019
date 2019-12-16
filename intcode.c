@@ -132,7 +132,7 @@ state *readprogf(FILE *in) {
     }
   }
 
-  s->mode = ASYNC;
+  s->mode = SYNC;
   s->state = NORMAL;
   s->output = 0;
   s->prog = calloc(sizeof(word), 4 * len);

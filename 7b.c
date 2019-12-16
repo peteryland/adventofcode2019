@@ -38,7 +38,6 @@ int tryperm(state *s0, word *ps) {
 
 int main() {
   state *s0 = readprog();
-  s0->mode = SYNC;
   word maxval = 0;
 
   for (int i = 0; i < NUMPERMS; i++) {

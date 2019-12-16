@@ -58,7 +58,6 @@ int getinput() {
 int main() {
   int x = SIZE/2, y = SIZE/2;
   state *s = readprogf(fopen("15.input", "r"));
-  s->mode = SYNC;
   int bearing;
   grid[x][y] = VISITED;
   do {
