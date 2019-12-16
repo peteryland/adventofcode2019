@@ -13,7 +13,7 @@ step' n xs = if n == length xs
              then []
              else (g $ sum (zipWith (*) xs (f (n+1) pat))):step' (n+1) xs
 
-getAnswer :: [Int] -> Int
-getAnswer xs = read . concatMap show $ take 8 $ iterate step xs !! 100
+getAnswer :: [Int] -> String
+getAnswer xs = concatMap show $ take 8 $ iterate step xs !! 100
 
-main = interact1 $ getAnswer . map (read . (:[]))
+main = interact1 $ Show' . getAnswer . map (read . (:[]))

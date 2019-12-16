@@ -19,5 +19,5 @@ main = do
   is <- lines <$> getContents
   let [cs0,cs1] = map (getCoords . splitBy ',') is
   let cs' = intersect' cs0 cs1
-  let closest = minimumBy (comparing $ manDist (0, 0)) cs'
-  print $ manDist closest (0, 0)
+  let closest = minimumBy (comparing $ manhattan (0, 0)) cs'
+  print $ manhattan closest (0, 0)
