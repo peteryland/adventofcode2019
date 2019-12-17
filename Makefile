@@ -6,7 +6,7 @@ DONEHS2 = $(wildcard [0-9][0-9][ab].hs)
 DONEC1 = $(wildcard [0-9][ab].c)
 DONEC2 = $(wildcard [0-9][0-9][ab].c)
 
-all: $(sort $(DONEHS1:%.hs=%h.output) $(DONEC1:%.c=%c.output)) $(sort $(DONEHS2:%.hs=%h.output) $(DONEC2:%.c=%c.output)) | 13ic 15ic
+all: $(sort $(DONEHS1:%.hs=%h.output) $(DONEC1:%.c=%c.output)) $(sort $(DONEHS2:%.hs=%h.output) $(DONEC2:%.c=%c.output)) | 13ic 15ic 17ic
 	@for output in $^; do /bin/echo -n "$$output: "; cat "$$output"; done
 
 clean:
@@ -51,7 +51,7 @@ updatetest:
 intcode.o: intcode.c
 	gcc $(CFLAGS) -c -o $@ $<
 
-2ac 2bc 5ac 5bc 7ac 7bc 9ac 9bc 11ac 11bc 13ac 13bc 15ac 15bc 15ic: intcode.o
+2ac 2bc 5ac 5bc 7ac 7bc 9ac 9bc 11ac 11bc 13ac 13bc 15ac 15bc 15ic 17ac 17bc 17ic: intcode.o
 
 .PRECIOUS: %h %c
 

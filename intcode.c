@@ -9,7 +9,7 @@ state *copystate(state *s0) {
   s->mode = s0->mode;
   s->state = s0->state;
   s->output = s0->output;
-  s->prog = calloc(s0->len, sizeof(word));
+  s->prog = calloc(4 * s0->len, sizeof(word));
   memcpy(s->prog, s0->prog, s0->len * sizeof(word));
   s->len = s0->len;
   s->ip = s0->ip;
