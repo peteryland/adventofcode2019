@@ -17,30 +17,30 @@ void outp(state *s) {
   }
 }
 
-inline int getsig(char grid[SIZE][SIZE], int i, int j) {
+inline int mygetsig(char mygrid[SIZE][SIZE], int i, int j) {
   int sig = 0;
   for (int y = j - 1; y <= j + 1; y++) {
     for (int x = i - 1; x <= i + 1; x++) {
       sig *= 2;
-      sig += grid[x][y];
+      sig += mygrid[x][y];
     }
   }
   return sig;
 }
 
 int main() {
-  char grid[SIZE][SIZE] = {0};
+  char mygrid[SIZE][SIZE] = {0};
   state *s = readprog();
   s->mode = ASYNC;
-  s->userstate = grid;
-  s->userlen = sizeof(grid);
+  s->userstate = mygrid;
+  s->userlen = sizeof(mygrid);
   s->onoutput = outp;
   runcode(s);
 
   int total = 0;
   for (int j = 1; j < SIZE - 1; j++) {
     for (int i = 1; i < SIZE - 1; i++) {
-      if (getsig(grid, i, j) == 0xba)
+      if (mygetsig(mygrid, i, j) == 0xba)
         total += i * j;
     }
   }

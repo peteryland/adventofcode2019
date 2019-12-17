@@ -1,7 +1,7 @@
 #ifndef _intcode_h_
 #define _intcode_h_
 
-#include <stdio.h>
+#include "p.h"
 
 typedef long long word;
 

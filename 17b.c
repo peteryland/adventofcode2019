@@ -66,12 +66,12 @@ char *tryabc(char *dirs, int dirlen, char *a, int alen, char *b, int blen, char 
 }
 
 int main() {
-  char grid[SIZE][SIZE] = {0};
+  char mygrid[SIZE][SIZE] = {0};
   state *s0 = readprog();
   s0->mode = ASYNC;
   state *s = copystate(s0);
-  s->userstate = grid;
-  s->userlen = sizeof(grid);
+  s->userstate = mygrid;
+  s->userlen = sizeof(mygrid);
   s->onoutput = outp;
   runcode(s);
   char *rx = (char*)&(s->useroutputstate), *ry = rx + 1, *rd = ry + 1;
@@ -81,10 +81,10 @@ int main() {
   while (true) {
     char dir;
     switch (*rd) {
-      case 0: dir = grid[*ry][*rx + 1]? R : L; break; // N
-      case 1: dir = grid[*ry + 1][*rx]? R : L; break; // E
-      case 2: dir = grid[*ry][*rx + 1]? L : R; break; // S
-      case 3: dir = grid[*ry + 1][*rx]? L : R; break; // W
+      case 0: dir = mygrid[*ry][*rx + 1]? R : L; break; // N
+      case 1: dir = mygrid[*ry + 1][*rx]? R : L; break; // E
+      case 2: dir = mygrid[*ry][*rx + 1]? L : R; break; // S
+      case 3: dir = mygrid[*ry + 1][*rx]? L : R; break; // W
     }
     *dirp++ = dir;
     *rd = *rd + (dir == L? -1 : 1);
@@ -97,7 +97,7 @@ int main() {
         case 2: y++; break; // S
         case 3: x--; break; // W
       }
-      if (x < 0 || y < 0 || grid[y][x] == 0) break;
+      if (x < 0 || y < 0 || mygrid[y][x] == 0) break;
       *rx = x; *ry = y;
       i++;
     }

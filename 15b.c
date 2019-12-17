@@ -6,10 +6,10 @@
 enum direction { Q, N, S, W, E };
 enum status { WALL, OK, OXY };
 enum gridstate { NOTVISITED, VISITED, HASOXY, HASWALL };
-enum gridstate grid[SIZE][SIZE];
+enum gridstate mygrid[SIZE][SIZE];
 char gridstate2char[] = " .O#";
 
-void drawgrid(enum gridstate grid[SIZE][SIZE], int x, int y, int *bl, int *bp) {
+void drawgrid(enum gridstate mygrid[SIZE][SIZE], int x, int y, int *bl, int *bp) {
   printf("[2J[0;0H");
   for (int j = 0; j < SIZE; j++) {
     for (int i = 0; i < SIZE; i++) {
@@ -17,7 +17,7 @@ void drawgrid(enum gridstate grid[SIZE][SIZE], int x, int y, int *bl, int *bp) {
       if (i == x && j == y)
         c = 'D';
       else
-        c = gridstate2char[grid[i][j]];
+        c = gridstate2char[mygrid[i][j]];
       putchar(c);
     }
     putchar('\n');
@@ -37,7 +37,7 @@ int main() {
   int x = SIZE/2, y = SIZE/2;
   state *s = readprog();
   int *bearing = bearinglist;
-  grid[x][y] = VISITED;
+  mygrid[x][y] = VISITED;
   do {
     int i = N;
     do {
@@ -47,7 +47,7 @@ int main() {
           case N: y1--; break; case E: x1++; break;
           case S: y1++; break; case W: x1--; break;
         }
-        if (grid[x1][y1] == NOTVISITED) goto out; // somewhere we haven't been
+        if (mygrid[x1][y1] == NOTVISITED) goto out; // somewhere we haven't been
       }
       // dead end, backtrack
       if (bearing == bearinglist) { // no more backtracks possible
@@ -71,13 +71,13 @@ out:
       case S: y1++; break; case W: x1--; break;
     }
     switch (s->output) {
-      case WALL: grid[x1][y1] = HASWALL; break;
-      case OXY: grid[x1][y1] = HASOXY; // fall through case to move as well
-      default: x = x1; y = y1; grid[x][y] = VISITED; *bearing++ = i; break;
+      case WALL: mygrid[x1][y1] = HASWALL; break;
+      case OXY: mygrid[x1][y1] = HASOXY; // fall through case to move as well
+      default: x = x1; y = y1; mygrid[x][y] = VISITED; *bearing++ = i; break;
     }
   } while (s->state != NORMAL && s->output != OXY);
 
-//  drawgrid(grid, x, y, bearinglist, bearing);
+//  drawgrid(mygrid, x, y, bearinglist, bearing);
 
   // Now that we've found the oxygen supply, determine how it spreads
   bearing = bearinglist;
@@ -92,7 +92,7 @@ out:
           case N: y1--; break; case E: x1++; break;
           case S: y1++; break; case W: x1--; break;
         }
-        if (grid[x1][y1] < HASOXY) goto out2;
+        if (mygrid[x1][y1] < HASOXY) goto out2;
       }
       // dead end, backtrack
       if (bearing == bearinglist) { // no more backtracks possible
@@ -107,7 +107,7 @@ out:
         case S: y++; break; case W: x--; break;
       }
       num_minutes--;
-//      drawgrid(grid, x, y, bearinglist, bearing);
+//      drawgrid(mygrid, x, y, bearinglist, bearing);
     } while (1);
 out2:
 
@@ -118,16 +118,16 @@ out2:
       case S: y1++; break; case W: x1--; break;
     }
     if (s->output == WALL) {
-      grid[x1][y1] = HASWALL;
+      mygrid[x1][y1] = HASWALL;
     } else {
       x = x1; y = y1;
-      grid[x1][y1] = HASOXY;
+      mygrid[x1][y1] = HASOXY;
       *bearing++ = i;
       num_minutes++;
     }
     if (num_minutes > max_minutes)
       max_minutes = num_minutes;
-//    drawgrid(grid, x, y, bearinglist, bearing);
+//    drawgrid(mygrid, x, y, bearinglist, bearing);
 //    printf("%d %d\n", num_minutes, max_minutes);
 //    usleep(100000);
 //    fflush(0);

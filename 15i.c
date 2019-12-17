@@ -7,10 +7,10 @@
 enum direction { Q, N, S, W, E };
 enum status { WALL, OK, OXY };
 enum gridstate { NOTVISITED, VISITED, HASOXY, HASWALL };
-enum gridstate grid[SIZE][SIZE];
+enum gridstate mygrid[SIZE][SIZE];
 char gridstate2char[] = " .O#";
 
-void drawgrid(enum gridstate grid[SIZE][SIZE], int x, int y) {
+void drawgrid(enum gridstate mygrid[SIZE][SIZE], int x, int y) {
   printf("[2J[0;0H");
   for (int j = 0; j < SIZE; j++) {
     for (int i = 0; i < SIZE; i++) {
@@ -18,7 +18,7 @@ void drawgrid(enum gridstate grid[SIZE][SIZE], int x, int y) {
       if (i == x && j == y)
         c = 'D';
       else
-        c = gridstate2char[grid[i][j]];
+        c = gridstate2char[mygrid[i][j]];
       putchar(c);
     }
     putchar('\n');
@@ -59,9 +59,9 @@ int main() {
   int x = SIZE/2, y = SIZE/2;
   state *s = readprogf(fopen("15.input", "r"));
   int bearing;
-  grid[x][y] = VISITED;
+  mygrid[x][y] = VISITED;
   do {
-    drawgrid(grid, x, y);
+    drawgrid(mygrid, x, y);
     bearing = getinput();
     if (bearing < 0)
       break;
@@ -74,11 +74,11 @@ int main() {
       case W: x1--; break;
     }
     switch (s->output) {
-      case WALL: grid[x1][y1] = HASWALL; break;
-      case OXY: grid[x1][y1] = HASOXY; // fall through case to move as well
-      default: x = x1; y = y1; grid[x][y] = VISITED; break;
+      case WALL: mygrid[x1][y1] = HASWALL; break;
+      case OXY: mygrid[x1][y1] = HASOXY; // fall through case to move as well
+      default: x = x1; y = y1; mygrid[x][y] = VISITED; break;
     }
   } while (s->state != NORMAL && s->output != OXY);
-  drawgrid(grid, 10000, 10000); // at the end, don't show the robot position
+  drawgrid(mygrid, 10000, 10000); // at the end, don't show the robot position
   return 0;
 }

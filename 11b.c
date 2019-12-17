@@ -1,5 +1,9 @@
 #include "intcode.h"
 
+void *get(grid *grid, int x, int y) { return (word *)grid->data + grid->height * x + y; }
+void put(grid *grid, int x, int y, void *val) { *((word *)grid->data + grid->height * x + y) = *(word *)val; }
+bool word2bool(void *val) { return *(word *)val != 0; }
+
 int main() {
   word panel[200][200] = {0};
   int x = 100, y = 100;
@@ -29,12 +33,20 @@ int main() {
     runinput(s, panel[x][y]);
   } while (s);
 
+/*
   printf("\n");
-  for (int i = 100; i<106; i++) {
-    for (int j = 101; j<140; j++) {
-      printf("%c", panel[j][i]? '#':' ');
+  for (int j = 100; j < 106; j++) {
+    for (int i = 101; i < 140; i++) {
+      printf("%c", panel[i][j]? '#':' ');
     }
     printf("\n");
   }
+*/
+
+  grid grid = { 200, 200, get, put, panel, sizeof(panel) };
+  char buf[1024];
+  char *b = findletters(buf, &grid, word2bool);
+  if (b)
+    puts(b);
   return 0;
 }

@@ -4,7 +4,7 @@
 
 //#define _interactive
 
-int grid[100][100] = {0};
+int mygrid[100][100] = {0};
 
 #ifdef _interactive
 int getchardirect() {
@@ -73,7 +73,7 @@ int main() {
             printf("[1;40H[2K%5lld[0;0H", score);
 #endif
           } else {
-            grid[x][y] = t;
+            mygrid[x][y] = t;
             if (t == 3) paddlex = x;
             if (t == 4) ballx = x;
 #ifdef _interactive
