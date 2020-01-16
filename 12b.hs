@@ -23,11 +23,10 @@ applygravity :: [V6i] -> [V6i]
 applygravity moons = map (applyg moons) moons
 applyg :: [V6i] -> V6i -> V6i
 applyg moons m = foldl applyg' m moons
-applyg' (x, y, z, vx, vy, vz) (xg, yg, zg, vxg, vyg, vzg) = (x, y, z, adj x xg vx vxg, adj y yg vy vyg, adj z zg vz vzg)
-adj w wg vw vwg
-  | w > wg = vw - 1
-  | w == wg = vw
-  | otherwise = vw + 1
+applyg' (x, y, z, vx, vy, vz) (xg, yg, zg, _, _, _) = (x, y, z, vx', vy', vz')
+  where
+    (vx', vy', vz') = (adj x xg vx, adj y yg vy, adj z zg vz)
+    adj w wg vw = vw + signum (wg - w)
 
 applyvelocity :: [V6i] -> [V6i]
 applyvelocity moons = map applyv moons

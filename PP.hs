@@ -1,17 +1,31 @@
 {-#LANGUAGE TypeSynonymInstances, TypeFamilies, FlexibleInstances, TupleSections, FlexibleContexts, AllowAmbiguousTypes, ConstrainedClassMethods #-}
-module PP( module PP, module Data.Int, module Data.Bits, module Data.Ord, module Data.Char, module Data.Maybe, module Data.List, module Data.List.Split, module Control.Arrow) where
+module PP( module PP, module Data.Int, module Data.Bits, module Data.Ord, module Data.Char, module Data.Maybe, module Data.List, module Data.List.Split, module Control.Arrow, module Control.Applicative, module Data.Function) where
 
 import Debug.Trace
 import Data.Int
 import Data.Bits
 import Data.Ord
 import Data.Char
+import Data.Function
 import Data.Maybe
 import Data.List
 import Data.List.Split
 import Control.Arrow
+import Control.Applicative
 import qualified Data.Set as S
 import qualified Data.IntMap as IM
+
+between :: Ord a => a -> a -> a -> Bool
+between x1 x2 x = case compare x1 x2 of
+                    EQ -> x == x1
+                    LT -> x >= x1 && x <= x2
+                    GT -> x <= x1 && x >= x2
+
+strictlyBetween :: Ord a => a -> a -> a -> Bool
+strictlyBetween x1 x2 x = case compare x1 x2 of
+                            EQ -> False
+                            LT -> x > x1 && x < x2
+                            GT -> x < x1 && x > x2
 
 newtype Show' = Show' String
 instance Show Show' where
@@ -92,6 +106,14 @@ mapCoords = mapCoordsBy id
 
 mapCoords' :: Char -> [String] -> [V2i]
 mapCoords' c = mapCoordsBy (==c)
+
+coordsManhatten :: [V2i]
+coordsManhatten = coordsManhatten' 0 0
+  where
+    coordsManhatten' 0 0 = (0,0):coordsManhatten' 1 0
+    coordsManhatten' 0 n = (0,-n):(0,n):coordsManhatten' (n+1) 0
+    coordsManhatten' n 0 = (-n,0):(n,0):coordsManhatten' (n-1) 1
+    coordsManhatten' n m = (-n,-m):(-n,m):(n,-m):(n,m):coordsManhatten' (n-1) (m+1)
 
 type (V2 a) = (a, a)
 type (V3 a) = (a, a, a)
@@ -489,3 +511,22 @@ instance (a1 ~ a2, a2 ~ a3, a3 ~ a4, a4 ~ a5, a5 ~ a6, a6 ~ a7, a7 ~ a8, a8 ~ a9
   toList (x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12) = [x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12]
 instance (a1 ~ a2, a2 ~ a3, a3 ~ a4, a4 ~ a5, a5 ~ a6, a6 ~ a7, a7 ~ a8, a8 ~ a9, a9 ~ a10, a10 ~ a11, a11 ~ a12) => FromList (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12) where
   fromList [x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12] = (x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12)
+
+-- Data.Composition
+
+(∘) :: (b -> c) -> (a -> b) -> a -> c
+(∘) = (.)
+
+(.:) :: (c -> d) -> (a -> b -> c) -> a -> b -> d
+(f .: g) x y = f (g x y)
+
+(.:.) :: (d -> e) -> (a -> b -> c -> d) -> a -> b -> c -> e
+(.:.) = (.) . (.:)
+
+(.::) :: (e -> f) -> (a -> b -> c -> d -> e) -> a -> b -> c -> d -> f
+(.::) = (.) . (.:.)
+
+infixr 9 ∘
+infixr 8 .:
+infixr 8 .:.
+infixr 8 .::

@@ -1,9 +1,15 @@
 import PP
 
-main = interactBy (=='-') $ length . filter id . map (ok . show) . (\[x, y] -> [x..y] :: [Int]) . map read
+main = interactBy (=='-') $ length . (\[x, y] -> getPossbilities x y)
 
-ok x = a && b && c
+getPossbilities x high | x > high = []
+getPossbilities x high = let next = getPossbilities (findNext $ show $ read x + 1) high
+                         in  if a && b
+                             then x:next
+                             else next
   where
-    a = length x == 6
-    b = or $ map ((==2) . length) $ group x
-    c = and $ map (uncurry (>=)) $ zip (tail x) x
+    findNext [] = []
+    findNext [x] = [x]
+    findNext xs@(x:y:ys) = if x > y then zipWith const (repeat x) xs else x:findNext (y:ys)
+    a = or $ map ((==2) . length) $ group x
+    b = and $ map (uncurry (>=)) $ zip (tail x) x

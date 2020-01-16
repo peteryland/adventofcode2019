@@ -1,4 +1,4 @@
-FLAGS = -fPIC -O2 -g
+FLAGS = -fPIC -O2
 CFLAGS = $(FLAGS)
 HFLAGS = $(FLAGS) -threaded -rtsopts -v0
 DONEHS1 = $(wildcard [0-9][ab].hs)
@@ -43,8 +43,12 @@ updatetest:
 	ghc $(HFLAGS) -o $@ $^
 	@rm -f -- $*.hi $*.o
 
-%c:: %.c
+%c:: %.c p.o
 	gcc $(CFLAGS) -o $@ $^
+	@rm -rf -- $@.dSYM
+
+p.o: p.c
+	gcc $(CFLAGS) -c $^
 	@rm -rf -- $@.dSYM
 
 13ic: 13b.c intcode.o
